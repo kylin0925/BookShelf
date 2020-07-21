@@ -21,6 +21,12 @@ class BookDbRepo(var application: Application){
         return dao.getAll()
     }
 
+    fun getBook(isbn:String): LiveData<Book> {
+        return dao.getBook(isbn)
+    }
+    fun getBook2(isbn:String): Book {
+        return dao.getBook2(isbn)
+    }
     fun insert(book:Book){
         inserAsyncTask(dao).execute(book)
     }

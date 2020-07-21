@@ -13,6 +13,10 @@ class DBViewModel(application: Application) : AndroidViewModel(application){
     fun getAllBook():LiveData<List<Book>>?{
         return this.allbook
     }
+
+    fun getBook(isbn:String):LiveData<Book>?{
+        return repo.getBook(isbn)
+    }
     fun insert(book:Book){
         repo.insert(book)
     }

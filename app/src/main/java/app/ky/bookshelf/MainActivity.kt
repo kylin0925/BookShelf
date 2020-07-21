@@ -3,6 +3,7 @@ package app.ky.bookshelf
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -48,8 +49,35 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = LinearLayoutManager(this)
-    }
 
+        var book = viewModel.getBook("9789864766758")?.observe(this, object :Observer<Book>{
+            override fun onChanged(t: Book?) {
+                Log.e(TAG,"viewModel onChanged " + t)
+                if(t!=null)
+                    Log.e(TAG,"title " + t)
+            }
+        })
+
+
+        queryAsyncTask().execute("9789864766758")
+    }
+    inner class queryAsyncTask() : AsyncTask<String, Book, Book>() {
+        override fun doInBackground(vararg params: String?): Book? {
+
+            if(params !=null && params!![0] != null){
+                Log.e(TAG, "QUERY new book " + params[0])
+                var repo = BookDbRepo(application)
+                var res = repo.getBook2(params[0]!!)
+                Log.e(TAG, "QUERY " + res)
+                return res
+            }
+            return null
+        }
+
+        override fun onPostExecute(result: Book?) {
+            super.onPostExecute(result)
+        }
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(data !=null) {
